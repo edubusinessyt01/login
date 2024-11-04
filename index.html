@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área de Membros</title>
+    <style>
+        /* Estilos Gerais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        /* Estilo de Seções */
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Divisória */
+        .divider {
+            width: 1px;
+            background-color: #ddd;
+        }
+
+        /* Estilo dos Formulários */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        form button {
+            padding: 12px;
+            width: 100%;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        #statusMessage {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            main {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .divider {
+                width: 80%;
+                height: 1px;
+                margin: 20px 0;
+            }
+
+            .form-section {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bem-vindo à Área de Membros</h1>
+    </header>
+    <main>
+        <section id="register-section" class="form-section">
+            <h2>Cadastro</h2>
+            <form id="registrationForm">
+                <input type="text" id="regUsername" placeholder="Nome de usuário" required>
+                <input type="email" id="regEmail" placeholder="Email" required>
+                <input type="password" id="regPassword" placeholder="Senha" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+
+        <div class="divider"></div>
+
+        <section id="login-section" class="form-section">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </section>
+    </main>
+
+    <div id="statusMessage"></div>
+
+    <!-- Firebase SDKs e Código JS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7fbJ7Cnr1vqQN2IOY65_hRVhw6CZB8K8",
+            authDomain: "mvp-area-de-membros.firebaseapp.com",
+            projectId: "mvp-area-de-membros",
+            storageBucket: "mvp-area-de-membros.appspot.com",
+            messagingSenderId: "425817991095",
+            appId: "1:425817991095:web:d34deeb78b32425ec62a32",
+            measurementId: "G-H195X86GRM"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const statusMessage = document.getElementById('statusMessage');
+
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                statusMessage.textContent = "Usuário registrado com sucesso!";
+                statusMessage.style.color = "green";
+            } catch (error) {
+                statusMessage.textContent = "Erro no cadastro: " + error.message;
+                statusMessage.style.color = "red";
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                statusMessage.textContent = "Login realizado com sucesso!";
+                statusMessage.style.color = "green";
+            } catch (error) {
+                statusMessage.textContent = "Erro no login: " + error.message;
+                statusMessage.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>
