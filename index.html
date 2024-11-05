@@ -204,6 +204,8 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 statusMessage.textContent = "Login realizado com sucesso!";
                 statusMessage.style.color = "green";
+                // Redireciona para a dashboard após o login
+                window.location.href = 'https://edubusinessyt01.github.io/dashboard'; // URL da sua dashboard
             } catch (error) {
                 statusMessage.textContent = "Erro no login: " + error.message;
                 statusMessage.style.color = "red";
